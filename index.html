@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gemini Chatbot</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
+</head>
+<body>
+  <h1>Gemini Chatbot</h1>
+  <input type="text" id="questionInput" placeholder="আপনার প্রশ্ন লিখুন...">
+  <button onclick="submitQuestion()">Submit</button>
+  <div id="responseArea"></div>
+
+  <script>
+    async function submitQuestion() {
+      const question = document.getElementById("questionInput").value;
+      const apiKey = 'AIzaSyB4X2HbcaBxnP8WdL7dlMVnFYM3Smyl7es'; // Replace with your actual API key
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: question }] }],
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('API request failed');
+        }
+
+        const data = await response.json();
+        const answer = data.candidates[0].output;
+        document.getElementById("responseArea").innerText = answer;
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById("responseArea").innerText = 'An error occurred. Please try again later.';
+      }
+    }
+  </script>
+</body>
+</html>
